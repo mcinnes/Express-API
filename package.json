@@ -19,7 +19,8 @@
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha",
-    "deploy": "echo \"Running deployment script\" && sh deploy.sh"
+    "deploy": "echo \"Running deployment script\" && sh deploy.sh",
+    "serve": "node app.js"
   },
   "author": "Matt McInnes",
   "license": "ISC"

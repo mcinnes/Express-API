@@ -1,13 +1,13 @@
 
-require('dotenv').config()
-const database = require('better-sqlite3')('./database/'+process.env.DB_HOST, { verbose: console.log });
+require('dotenv').config();
+const database = require('better-sqlite3')('./database/'+process.env.DB_HOST, {});
 const express = require('express');
-var bodyParser = require('body-parser')
-var jsonParser = bodyParser.json()
+var bodyParser = require('body-parser');
+var jsonParser = bodyParser.json();
 
-const UserController = require("./controllers/UserController.js")
-const Mailer = require ('./services/MailerService.js')
-const EmailController = require("./controllers/EmailController.js")
+const UserController = require("./controllers/UserController.js");
+const Mailer = require ('./services/MailerService.js');
+const EmailController = require("./controllers/EmailController.js");
 
 const app = express();
 const port = 3000;
@@ -79,7 +79,7 @@ app.get('/emails', (req, res) => {
 */
 app.put("/email", jsonParser, (req, res) => { 
   //Get email content based on the user and type of email we want
-  let content = EmailController.getEmailContent(database,req.body.user, req.body.type)
+  let content = EmailController.getEmailContent(database,req.body.user, req.body.type);
 
   if (content == "invalid user") {
     res.status(400).send(respond("fail", "Invalid User", ));

@@ -8,7 +8,6 @@ fi
 
 echo Downloading CloudFormation template to ./template.json
 echo ------------------------------------------------------
-echo \n
 #Download Cloudformation file
 curl -s https://sb-tech-test.s3-ap-southeast-2.amazonaws.com/cloudformation.json --output template.json
 
@@ -26,4 +25,4 @@ read privatekey
 #Deploy to cloudformation
 aws cloudformation deploy --template-file template.json --stack-name technical-test --parameter-overrides KeyName=$privatekey
 
-aws cloudformation describe-stacks --stack-name technical-test
+aws cloudformation describe-stacks --stack-name technical-test | grep OutputValue

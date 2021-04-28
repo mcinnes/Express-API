@@ -13,7 +13,7 @@ If you have a Mailgun account
 1. Fill in the missing fields in ```env```
 2. Copy ```env``` to ```.env```
 
-If you don't you can download a copy of the CloudFormation .env from [here]()
+If you don't you can download a copy of the CloudFormation .env from [here]('https://sb-tech-test.s3-ap-southeast-2.amazonaws.com/env')
 
 Run the following commands to start the program
 
@@ -23,7 +23,7 @@ npm run serve
 ```
 
 ### Option 2
-Deploy to AWS using CloudFormation
+Deploy to AWS using CloudFormation using deploy command
 
 Depends on AWS CLI Tools, curl, bash
 
@@ -31,6 +31,17 @@ This executes the deploy.sh file in the project root and uses your configured AW
 
 ```bash
 npm run deploy
+```
+
+### Option 3
+Deploy to AWS using CloudFormation manually
+
+Depends on AWS CLI Tools
+
+From the project root run, replace $privateKey with the name of an available key
+
+```bash
+aws cloudformation deploy --template-file template.json --stack-name technical-test --parameter-overrides KeyName=$privatekey
 ```
 
 ## Documentation
@@ -63,3 +74,25 @@ SQLite was chosen due to the portability and quick setup. If the project was any
 
 Deployment script has only been tested on macOS due to time constraints
 
+
+## General Information
+
+### API
+
+Express as the router/server
+
+Mocha as the testing framework
+
+Chai as the assertion library
+
+Mailgun as the email service
+
+### CloudFormation
+
+Deploys a t2.small EC2 instance running Amazon Linux
+
+Installs git, Docker, curl
+
+Downloads Dockerfile, .env from S3
+
+Runs git clone against the Github repository [here]('https://github.com/mcinnes/Express-API')

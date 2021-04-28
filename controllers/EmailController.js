@@ -23,16 +23,16 @@ const getEmailContent = (database, userId, emailType) => {
 
     switch (emailType) {
       case 'welcome':
-        message = `Hello ${user.first_name} welcome to our new platform`
-        subject = 'Welcome to the platform'
+        message = `Hello ${user.first_name} welcome to our new platform`;
+        subject = 'Welcome to the platform';
       break;
       case 'forgot':
-        message = `Hi ${user.first_name} click here to reset your password`
-        subject = 'Password Reset'
+        message = `Hi ${user.first_name} click here to reset your password`;
+        subject = 'Password Reset';
       break;
       case 'confirm':
-        message = `Hey ${user.first_name} your order ${Math.random(9)} has been confirmed`
-        subject = 'Order Confirmation'
+        message = `Hey ${user.first_name} your order ${Math.random(9)} has been confirmed`;
+        subject = 'Order Confirmation';
       break;
     }
     return {subject,message,user};
@@ -55,12 +55,18 @@ const getEmails = (database, searchKey, searchValue, limit = 50, page = 1, order
   //Calculate the offset to pass to the database for pagination
   const offset = page > 1 ? limit * (page - 1) : 0;
 
-  let orderQuery = ''
+  let orderQuery = '';
 
   //Fix SQL Injection
   if (order !== undefined && order.length) {
     order = order.split(':');
-    orderQuery = `ORDER BY ${order[0]} ${order[1]}`
+
+    //Only allow ordering by existing keys
+    if(!["id","message","title","type","created_at","email"].includes(order[0])) {
+      return false;
+    }
+
+    orderQuery = `ORDER BY ${order[0]} ${order[1]}`;
   }
 
   let row;
@@ -70,30 +76,30 @@ const getEmails = (database, searchKey, searchValue, limit = 50, page = 1, order
   switch (searchKey) {
     case 'email':
         row = database.prepare(`SELECT emails.uuid, title, message, emails.created_at, status, first_name, last_name, email, username, users.uuid FROM emails LEFT JOIN users on users.id = emails.user_id WHERE users.email = ? ${orderQuery} LIMIT ? OFFSET ?`).all(searchValue, limit, offset);
-        total = database.prepare('SELECT count(*) as total FROM emails LEFT JOIN users on users.id = emails.user_id WHERE users.email = ?').get(searchValue)
+        total = database.prepare('SELECT count(*) as total FROM emails LEFT JOIN users on users.id = emails.user_id WHERE users.email = ?').get(searchValue);
       break;
     case 'type':
         row = database.prepare(`SELECT emails.uuid, title, message, emails.created_at, status, first_name, last_name, email, username, users.uuid FROM emails LEFT JOIN users on users.id = emails.user_id WHERE type = ? ${orderQuery} LIMIT ? OFFSET ?`).all(searchValue, limit, offset);
-        total = database.prepare('SELECT count(*) as total FROM emails WHERE type = ?').get(searchValue)
+        total = database.prepare('SELECT count(*) as total FROM emails WHERE type = ?').get(searchValue);
       break;
     case 'date':
         row = database.prepare(`SELECT emails.uuid, title, message, emails.created_at, status, first_name, last_name, email, username, users.uuid FROM emails LEFT JOIN users on users.id = emails.user_id WHERE created_at LIKE ?% ${orderQuery} LIMIT ? OFFSET ?`).all(searchValue, limit, offset);
-        total = database.prepare('SELECT count(*) as total FROM emails WHERE created_at LIKE ?%').get(searchValue)
+        total = database.prepare('SELECT count(*) as total FROM emails WHERE created_at LIKE ?%').get(searchValue);
       break;
     case 'user':
         row = database.prepare(`SELECT emails.uuid, title, message, emails.created_at, status, first_name, last_name, email, username, users.uuid FROM emails LEFT JOIN users on users.id = emails.user_id WHERE users.uuid = ? ${orderQuery} LIMIT ? OFFSET ?`).all(searchValue, limit, offset);
-        total = database.prepare('SELECT count(*) as total FROM emails LEFT JOIN users on users.id = emails.user_id WHERE users.uuid = ?').get(searchValue)
+        total = database.prepare('SELECT count(*) as total FROM emails LEFT JOIN users on users.id = emails.user_id WHERE users.uuid = ?').get(searchValue);
       break;
     default:
       row = database.prepare(`SELECT * FROM emails ${orderQuery} LIMIT ? OFFSET ?`).all( limit, offset);
-      total = database.prepare('SELECT count(*) as total FROM emails').get()
+      total = database.prepare('SELECT count(*) as total FROM emails').get();
   }
 
   //Create our meta object to hold pagination data
   total =  total === undefined ? 0 : total.total;
   let pages = total > 0 ? Math.ceil((total/limit)) : 1;
 
-  return {'result':row, 'meta':{'total':total, 'pages':pages}}
+  return {'result':row, 'meta':{'total':total, 'pages':pages}};
 }
 
 const logEmail = (database, emailType, content, status) => {
