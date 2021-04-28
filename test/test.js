@@ -115,5 +115,4 @@ describe('Database', function () {
     let logEmail = EmailController.logEmail(database, 'test', {"subject":"test","message":"test","user":{"id":1},"status":3}) 
     expect(logEmail).to.be.a("object");
   });
-  
 });

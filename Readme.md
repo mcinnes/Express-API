@@ -29,6 +29,8 @@ Depends on AWS CLI Tools, curl, bash
 
 This executes the deploy.sh file in the project root and uses your configured AWS credentials
 
+The URL will be displayed in the terminal after deployment
+
 ```bash
 npm run deploy
 ```
@@ -42,6 +44,7 @@ From the project root run, replace $privateKey with the name of an available key
 
 ```bash
 aws cloudformation deploy --template-file template.json --stack-name technical-test --parameter-overrides KeyName=$privatekey
+aws cloudformation describe-stacks --stack-name technical-test | grep OutputValue
 ```
 
 ## Documentation
@@ -96,3 +99,5 @@ Installs git, Docker, curl
 Downloads Dockerfile, .env from S3
 
 Runs git clone against the Github repository [here]('https://github.com/mcinnes/Express-API')
+
+Builds and starts the docker image
