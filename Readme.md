@@ -31,6 +31,8 @@ This executes the deploy.sh file in the project root and uses your configured AW
 
 The URL will be displayed in the terminal after deployment
 
+The API is exposed on port 80
+
 ```bash
 npm run deploy
 ```
